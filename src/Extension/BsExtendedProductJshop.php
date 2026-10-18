@@ -23,7 +23,7 @@ use Joomla\Plugin\System\BsExtendedProductJshop\Helper\BlocksHelper;
 
 final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterface
 {
-    public const VERSION = '1.0.3';
+    public const VERSION = '1.1.0';
 
     public const COLUMN = 'custom_blocks';
 
@@ -256,12 +256,6 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
             'plg_system_bs_extended_product_jshop.product',
             'plg_system_bs_extended_product_jshop/css/product.css',
             ['version' => self::VERSION]
-        );
-        $wa->registerAndUseScript(
-            'plg_system_bs_extended_product_jshop.product',
-            'plg_system_bs_extended_product_jshop/js/product.js',
-            ['version' => self::VERSION],
-            ['defer' => true]
         );
     }
 

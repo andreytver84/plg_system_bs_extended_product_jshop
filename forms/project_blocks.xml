@@ -69,9 +69,11 @@
                 />
                 <field
                     name="content"
-                    type="textarea"
-                    rows="6"
+                    type="editor"
                     filter="safehtml"
+                    buttons="true"
+                    hide="readmore,pagebreak,module,moduleposition"
+                    height="220"
                     label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDION_CONTENT_LABEL"
                     description="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDION_CONTENT_DESC"
                 />

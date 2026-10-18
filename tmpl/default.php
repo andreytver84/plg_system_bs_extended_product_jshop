@@ -27,9 +27,13 @@ $accordion = \is_array($blocks['accordions'] ?? null) ? $blocks['accordions'] : 
 $hasFeatures   = $col1 !== '' || $col2 !== '';
 $hasLayouts    = $layouts !== [];
 $hasAccordion  = $accordion !== [];
+$hasAny        = $hasFeatures || $hasLayouts || $hasAccordion;
 $featuresClass = ($col1 !== '' && $col2 !== '') ? 'bsep-features__grid' : 'bsep-features__grid bsep-features__grid--single';
 ?>
 <section class="bsep" data-bsep>
+    <?php if ($hasAny) : ?>
+        <h2 class="bsep__title bsep__lead"><?php echo $esc(Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_PROJECT_TITLE')); ?></h2>
+    <?php endif; ?>
     <?php if ($hasFeatures) : ?>
         <div class="bsep-features">
             <h2 class="bsep__title"><?php echo $esc(Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_FEATURES_TITLE')); ?></h2>
@@ -59,31 +63,19 @@ $featuresClass = ($col1 !== '' && $col2 !== '') ? 'bsep-features__grid' : 'bsep-
                 $alt     = $caption !== '' ? $caption : Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_LAYOUT_IMAGE_LABEL');
                 ?>
                 <figure class="bsep-layouts__item">
-                    <a
-                        class="bsep-layouts__link"
-                        href="<?php echo $esc($src); ?>"
-                        data-bsep-lightbox
-                        data-bsep-caption="<?php echo $esc($caption); ?>"
+                    <img
+                        class="bsep-layouts__img"
+                        src="<?php echo $esc($src); ?>"
+                        alt="<?php echo $esc($alt); ?>"
+                        loading="lazy"
+                        decoding="async"
                     >
-                        <img
-                            class="bsep-layouts__img"
-                            src="<?php echo $esc($src); ?>"
-                            alt="<?php echo $esc($alt); ?>"
-                            loading="lazy"
-                            decoding="async"
-                        >
-                    </a>
                     <?php if ($caption !== '') : ?>
                         <figcaption class="bsep-layouts__caption"><?php echo $esc($caption); ?></figcaption>
                     <?php endif; ?>
                 </figure>
             <?php endforeach; ?>
         </div>
-        <dialog class="bsep-lightbox" data-bsep-dialog>
-            <button type="button" class="bsep-lightbox__close" data-bsep-close aria-label="<?php echo $esc(Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_LIGHTBOX_CLOSE')); ?>">×</button>
-            <img class="bsep-lightbox__img" alt="">
-            <p class="bsep-lightbox__caption"></p>
-        </dialog>
     <?php endif; ?>
 
     <?php if ($hasAccordion) : ?>
