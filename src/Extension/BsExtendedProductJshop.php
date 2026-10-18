@@ -23,7 +23,7 @@ use Joomla\Plugin\System\BsExtendedProductJshop\Helper\BlocksHelper;
 
 final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterface
 {
-    public const VERSION = '1.0.2';
+    public const VERSION = '1.0.3';
 
     public const COLUMN = 'custom_blocks';
 
@@ -57,7 +57,7 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
             return;
         }
 
-        $blocks = $this->readBlocks($view->product);
+        $blocks = $this->readBlocks($view->product, true);
         $form   = $this->makeForm();
         $form->bind($blocks);
 
@@ -279,18 +279,27 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
     /**
      * @return  array{features_col1: string, features_col2: string, layouts: array<int, array{image: string, caption: string}>, accordions: array<int, array{title: string, content: string}>}
      */
-    private function readBlocks(object $product): array
+    private function readBlocks(object $product, bool $fromDb = false): array
     {
-        $json = '';
+        $json      = '';
+        $productId = (int) ($product->product_id ?? 0);
 
-        if (isset($product->{self::COLUMN}) && \is_string($product->{self::COLUMN})) {
+        // В админке JoomShopping делает OutputFilter::objectHTMLSafe($product): JSON в свойстве
+        // превращается в &quot;…&quot; и не декодируется. Поэтому читаем колонку напрямую из БД.
+        if ($fromDb && $productId > 0) {
+            $json = $this->fetchColumn($productId);
+        }
+
+        if ($json === '' && isset($product->{self::COLUMN}) && \is_string($product->{self::COLUMN})) {
             $json = $product->{self::COLUMN};
-        } else {
-            $productId = (int) ($product->product_id ?? 0);
 
-            if ($productId > 0) {
-                $json = $this->fetchColumn($productId);
+            if ($json !== '' && json_decode($json) === null) {
+                $json = htmlspecialchars_decode($json, ENT_QUOTES);
             }
+        }
+
+        if ($json === '' && !$fromDb && $productId > 0) {
+            $json = $this->fetchColumn($productId);
         }
 
         return BlocksHelper::decode($json);
