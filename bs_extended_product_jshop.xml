@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="system" method="upgrade">
+    <name>PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP</name>
+    <author>Andrey Uvikov</author>
+    <creationDate>2026-10</creationDate>
+    <copyright>Copyright (C) 2026 Andrey Uvikov. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later</license>
+    <authorUrl>https://github.com/andreytver84</authorUrl>
+    <version>1.0.0</version>
+    <description>PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_XML_DESCRIPTION</description>
+
+    <namespace path="src">Joomla\Plugin\System\BsExtendedProductJshop</namespace>
+    <scriptfile>script.php</scriptfile>
+
+    <files>
+        <folder plugin="bs_extended_product_jshop">services</folder>
+        <folder>src</folder>
+        <folder>forms</folder>
+        <folder>language</folder>
+    </files>
+
+    <languages>
+        <language tag="ru-RU">language/ru-RU/plg_system_bs_extended_product_jshop.ini</language>
+        <language tag="ru-RU">language/ru-RU/plg_system_bs_extended_product_jshop.sys.ini</language>
+        <language tag="en-GB">language/en-GB/plg_system_bs_extended_product_jshop.ini</language>
+        <language tag="en-GB">language/en-GB/plg_system_bs_extended_product_jshop.sys.ini</language>
+    </languages>
+
+    <updateservers>
+        <server type="extension" priority="1" name="BS Extended Product JShop Updates">https://raw.githubusercontent.com/andreytver84/plg_bs_extended_product_jshop/main/update.xml</server>
+    </updateservers>
+</extension>
