@@ -4,26 +4,25 @@
 
 | Файл | Назначение |
 |---|---|
-| `language/ru-RU/ru-RU.mod_bsjshop_filter.ini` | runtime RU |
-| `language/en-GB/en-GB.mod_bsjshop_filter.ini` | runtime EN |
-| `language/ru-RU/ru-RU.mod_bsjshop_filter.sys.ini` | установщик/список модулей RU |
-| `language/en-GB/en-GB.mod_bsjshop_filter.sys.ini` | установщик/список модулей EN |
+| `language/ru-RU/plg_system_bs_extended_product_jshop.ini` | runtime RU |
+| `language/en-GB/plg_system_bs_extended_product_jshop.ini` | runtime EN |
+| `language/ru-RU/plg_system_bs_extended_product_jshop.sys.ini` | установщик RU |
+| `language/en-GB/plg_system_bs_extended_product_jshop.sys.ini` | установщик EN |
 
-Не переименовывать в `mod_bsjshop_filter.ini` без задачи: текущие имена с префиксом локали рабочие.
+Имена без префикса локали (`plg_system_…ini`) — норма Joomla 4+.
 
 ## Правила
 
 - UTF-8 без BOM, `\n` переводы строк.
-- `KEY="value"`. Ключ: `MOD_BSJSHOP_FILTER_` + UPPER_SNAKE.
-- В XML: `label="MOD_BSJSHOP_FILTER_FIELD_…_LABEL"`, `description="…_DESC"`.
-- Дефолты полей: ключ + `translate_default="true"` (`MOD_BSJSHOP_FILTER_DEFAULT_*`).
-- В PHP/tmpl: `Text::_('MOD_BSJSHOP_FILTER_…')`.
-- `.sys.ini` минимум: `MOD_BSJSHOP_FILTER`, `MOD_BSJSHOP_FILTER_XML_DESCRIPTION`.
+- `KEY="value"`. Ключ: `PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_` + UPPER_SNAKE.
+- В XML: `label="…_LABEL"`, `description="…_DESC"`.
+- В PHP/tmpl: `Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_…')`.
+- `.sys.ini` минимум: имя плагина и `XML_DESCRIPTION`.
 - HTML в значениях — только `*_DESC`. Внутри кавычки удваивать: `"Say ""Hello"""`.
 
 ## Чеклист новой строки
 
 1. Ключ в RU `.ini` и EN `.ini` (или оба `.sys.ini`).
 2. Использование в XML или `Text::_`.
-3. Карта ключей совпадает (можно сравнить `^[A-Z0-9_]+` без значений).
+3. Карта ключей совпадает.
 4. Не оставлять ключ только в одной локали.

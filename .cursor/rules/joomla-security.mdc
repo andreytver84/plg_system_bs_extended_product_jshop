@@ -1,0 +1,14 @@
+---
+description: Stored XSS, HTML-фильтр, пути медиа и SQL колонки custom_blocks.
+globs: "{src/**/*.php,tmpl/**/*.php,script.php,media/js/**}"
+alwaysApply: false
+---
+
+# Безопасность блоков товара
+
+- POST `project_blocks` брать RAW **только** затем сразу `Form::filter` + `BlocksHelper::sanitize`.
+- Редактор: `InputFilter` HTML, без `script`/`iframe`/`on*`. Не вызывать `content.prepare` на этих полях.
+- Заголовки, подписи, `{name}`: `BlocksHelper::text`, в HTML — `htmlspecialchars`.
+- Картинки: относительный `images|media/…`, без `..`, схем и SVG. `src` собирать из `Uri::root()`.
+- JS: без `innerHTML`. Лайтбокс — `textContent` и same-origin `href`.
+- SQL: bind. `ALTER` только после `getTableColumns`. Колонку при uninstall не дропать.

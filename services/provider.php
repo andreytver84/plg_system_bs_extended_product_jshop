@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     Joomla.Plugin
  * @subpackage  System.BsExtendedProductJshop
@@ -9,6 +10,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Extension\PluginInterface;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Database\DatabaseInterface;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use Joomla\Event\DispatcherInterface;
@@ -20,12 +22,15 @@ return new class () implements ServiceProviderInterface {
         $container->set(
             PluginInterface::class,
             function (Container $container) {
-                $dispatcher = $container->get(DispatcherInterface::class);
                 $plugin = new BsExtendedProductJshop(
-                    $dispatcher,
+                    $container->get(DispatcherInterface::class),
                     (array) PluginHelper::getPlugin('system', 'bs_extended_product_jshop')
                 );
                 $plugin->setApplication(Factory::getApplication());
+
+                if (method_exists($plugin, 'setDatabase')) {
+                    $plugin->setDatabase($container->get(DatabaseInterface::class));
+                }
 
                 return $plugin;
             }

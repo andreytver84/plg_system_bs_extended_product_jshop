@@ -1,73 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
     <fieldset name="project_blocks" label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_FIELDSET_LABEL">
-        
-        <field 
-            name="features_col1" 
-            type="editor" 
-            label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_FEATURES_COL1_LABEL" 
+        <field
+            name="features_col1"
+            type="editor"
+            label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_FEATURES_COL1_LABEL"
             description="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_FEATURES_COL1_DESC"
-            filter="safehtml" 
-            buttons="true" 
+            filter="safehtml"
+            buttons="true"
+            hide="readmore,pagebreak,module,moduleposition"
+            height="220"
         />
-        
-        <field 
-            name="features_col2" 
-            type="editor" 
-            label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_FEATURES_COL2_LABEL" 
+        <field
+            name="features_col2"
+            type="editor"
+            label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_FEATURES_COL2_LABEL"
             description="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_FEATURES_COL2_DESC"
-            filter="safehtml" 
-            buttons="true" 
+            filter="safehtml"
+            buttons="true"
+            hide="readmore,pagebreak,module,moduleposition"
+            height="220"
         />
-
-        <field 
-            name="layouts" 
-            type="subform" 
-            label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_LAYOUTS_LABEL" 
+        <field
+            name="layouts"
+            type="subform"
+            label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_LAYOUTS_LABEL"
             description="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_LAYOUTS_DESC"
-            multiple="true" 
+            multiple="true"
+            buttons="add,remove,move"
             layout="joomla.form.field.subform.repeatable"
         >
             <form>
-                <field 
-                    name="image" 
-                    type="media" 
-                    label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_LAYOUT_IMAGE_LABEL" 
-                    preview="true" 
+                <field
+                    name="image"
+                    type="media"
+                    label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_LAYOUT_IMAGE_LABEL"
+                    preview="true"
+                    types="images"
+                    filter="string"
                 />
-                <field 
-                    name="caption" 
-                    type="text" 
-                    label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_LAYOUT_CAPTION_LABEL" 
+                <field
+                    name="caption"
+                    type="text"
+                    label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_LAYOUT_CAPTION_LABEL"
                     hint="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_LAYOUT_CAPTION_HINT"
+                    filter="string"
+                    maxlength="255"
                 />
             </form>
         </field>
-
-        <field 
-            name="accordions" 
-            type="subform" 
-            label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDIONS_LABEL" 
+        <field
+            name="accordions"
+            type="subform"
+            label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDIONS_LABEL"
             description="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDIONS_DESC"
-            multiple="true" 
+            multiple="true"
+            buttons="add,remove,move"
             layout="joomla.form.field.subform.repeatable"
         >
             <form>
-                <field 
-                    name="title" 
-                    type="text" 
-                    label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDION_TITLE_LABEL" 
+                <field
+                    name="title"
+                    type="text"
+                    label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDION_TITLE_LABEL"
                     hint="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDION_TITLE_HINT"
+                    filter="string"
+                    maxlength="255"
                 />
-                <field 
-                    name="content" 
-                    type="textarea" 
-                    rows="5" 
-                    label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDION_CONTENT_LABEL" 
-                    filter="safehtml" 
+                <field
+                    name="content"
+                    type="textarea"
+                    rows="6"
+                    filter="safehtml"
+                    label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDION_CONTENT_LABEL"
+                    description="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDION_CONTENT_DESC"
                 />
             </form>
         </field>
-
     </fieldset>
 </form>

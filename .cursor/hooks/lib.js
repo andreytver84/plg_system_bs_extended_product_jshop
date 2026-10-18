@@ -23,24 +23,21 @@ function readRepoFile(rel) {
 }
 
 function versions() {
-  const xml = readRepoFile('mod_bsjshop_filter.xml');
-  const php = readRepoFile('mod_bsjshop_filter.php');
-  const helper = readRepoFile('src/Helper/BsjshopFilterHelper.php');
+  const xml = readRepoFile('bs_extended_product_jshop.xml');
+  const php = readRepoFile('src/Extension/BsExtendedProductJshop.php');
   const upd = readRepoFile('update.xml');
   const manifest = (xml.match(/<version>([^<]+)<\/version>/) || [])[1] || '';
-  const asset = (php.match(/\$assetVersion\s*=\s*'([^']+)'/) || [])[1] || '';
-  const helperVer = (helper.match(/VERSION\s*=\s*'([^']+)'/) || [])[1] || '';
+  const pluginVer = (php.match(/VERSION\s*=\s*'([^']+)'/) || [])[1] || '';
   const update = (upd.match(/<version>([^<]+)<\/version>/) || [])[1] || '';
   const url = (upd.match(/<downloadurl[^>]*>([^<]+)<\/downloadurl>/) || [])[1] || '';
   const urlOk = !update || (url.includes('v' + update) && url.includes(update));
   return {
     manifest,
-    asset,
-    helperVer,
+    pluginVer,
     update,
     url,
     urlOk,
-    synced: manifest && manifest === asset && asset === update && asset === helperVer && urlOk,
+    synced: Boolean(manifest && manifest === pluginVer && pluginVer === update && urlOk),
   };
 }
 
@@ -57,8 +54,14 @@ function iniKeys(rel) {
 
 function langDrift() {
   const pairs = [
-    ['language/ru-RU/ru-RU.mod_bsjshop_filter.ini', 'language/en-GB/en-GB.mod_bsjshop_filter.ini'],
-    ['language/ru-RU/ru-RU.mod_bsjshop_filter.sys.ini', 'language/en-GB/en-GB.mod_bsjshop_filter.sys.ini'],
+    [
+      'language/ru-RU/plg_system_bs_extended_product_jshop.ini',
+      'language/en-GB/plg_system_bs_extended_product_jshop.ini',
+    ],
+    [
+      'language/ru-RU/plg_system_bs_extended_product_jshop.sys.ini',
+      'language/en-GB/plg_system_bs_extended_product_jshop.sys.ini',
+    ],
   ];
   const missing = [];
 
@@ -80,4 +83,65 @@ function langDrift() {
   return missing;
 }
 
-module.exports = { readInput, writeOutput, repoRoot, readRepoFile, versions, langDrift };
+function securityFlags() {
+  const files = [
+    'src/Extension/BsExtendedProductJshop.php',
+    'src/Helper/BlocksHelper.php',
+    'tmpl/default.php',
+    'script.php',
+    'services/provider.php',
+    'media/js/product.js',
+  ];
+  const flags = [];
+
+  for (const rel of files) {
+    let text = '';
+    try {
+      text = readRepoFile(rel);
+    } catch {
+      continue;
+    }
+
+    if (/\bJFactory\b|\bJText::|\bJHtml::/.test(text)) {
+      flags.push(rel + ': legacy JFactory/JText/JHtml');
+    }
+    if (/innerHTML/.test(text)) {
+      flags.push(rel + ': innerHTML');
+    }
+    if (/content\.prepare/.test(text)) {
+      flags.push(rel + ': content.prepare');
+    }
+    if (/unserialize\(/.test(text)) {
+      flags.push(rel + ': unserialize');
+    }
+    if (rel.endsWith('.php') && !/_JEXEC/.test(text)) {
+      flags.push(rel + ': нет _JEXEC');
+    }
+  }
+
+  try {
+    const ext = readRepoFile('src/Extension/BsExtendedProductJshop.php');
+    const hasRaw = /get\('project_blocks',\s*\[\],\s*'RAW'\)/.test(ext);
+    const hasSanitize = /BlocksHelper::sanitize/.test(ext);
+    if (hasRaw && !hasSanitize) {
+      flags.push('src/Extension/BsExtendedProductJshop.php: RAW без BlocksHelper::sanitize');
+    }
+    if (!/isClient\('administrator'\)/.test(ext)) {
+      flags.push('src/Extension/BsExtendedProductJshop.php: сохранение без проверки administrator');
+    }
+  } catch {
+    // ignore
+  }
+
+  return flags;
+}
+
+module.exports = {
+  readInput,
+  writeOutput,
+  repoRoot,
+  readRepoFile,
+  versions,
+  langDrift,
+  securityFlags,
+};

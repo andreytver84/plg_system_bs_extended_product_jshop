@@ -1,54 +1,48 @@
-# Структура расширения Joomla 5/6
+# Структура плагина Joomla 5/6
 
 Актуально для **этого** репозитория. Не описывай CMS целиком.
 
 ## Текущее дерево
 
 ```
-mod_bsjshop_filter.php     вход для Joomla 4 / fallback
-mod_bsjshop_filter.xml     манифест
-helper.php                 legacy com_ajax (ModBsjshopFilterHelper)
-services/provider.php      Dispatcher + HelperFactory
-src/Dispatcher/Dispatcher.php
-src/Helper/BsjshopFilterHelper.php
-tmpl/default.php           фильтр + сетка
-tmpl/products.php          карточки (SSR и AJAX HTML)
-language/ru-RU|en-GB/      .ini и .sys.ini
-assets/css|js/             style.css, script.js
-update.xml                 update server
+bs_extended_product_jshop.xml   манифест plugin/system
+script.php                      колонка custom_blocks, enable
+services/provider.php           Application + Database
+src/Extension/BsExtendedProductJshop.php
+src/Helper/BlocksHelper.php     HTML/текст/пути/JSON
+forms/project_blocks.xml        поля в карточке товара
+tmpl/default.php                витрина
+media/css/product.css
+media/js/product.js             лайтбокс без innerHTML
+language/ru-RU|en-GB/           .ini и .sys.ini
+update.xml
 ```
 
-Манифест: `type="module" client="site" method="upgrade"`. Namespace: `Bestsite\Module\BsjshopFilter`.
+Манифест: `type="plugin" group="system" method="upgrade"`.
+Namespace: `Joomla\Plugin\System\BsExtendedProductJshop`.
 
-## Совместимость 5 и 6
+## Совместимость 4, 5 и 6
 
-- PHP 8.1-совместимо (без 8.3-only), если не оговорено иначе.
-- API: `Joomla\CMS\*` (Factory, Text, Uri, ModuleHelper, Session).
-- Запрещены legacy `JFactory` / `JText` / `JHtml` / `JRequest`.
-- Bootstrap 5 / vanilla JS. jQuery не добавлять.
-- WebAssetManager не подключать без явной задачи. Ассеты — `addStyleSheet` / `addScript`.
+- PHP 8.1, API `Joomla\CMS\*`. Запрещены `JFactory` / `JText` / `JHtml` / `JRequest`.
+- Bootstrap шаблона не требовать: аккордеон — `<details>`. jQuery не добавлять.
+- Ассеты: WebAssetManager, `version` = `BsExtendedProductJshop::VERSION`.
 
-## AJAX
+## События JoomShopping 5
 
-`index.php?option=com_ajax&module=bsjshop_filter&method=filter&format=json&helper=BsjshopFilterHelper`
+| Событие | Зачем |
+|---|---|
+| `onBeforeDisplayEditProductView` | HTML полей в `$view->plugin_template_description` |
+| `onBeforeSaveProduct` | санитизированный JSON в `$post` и объект товара |
+| `onAfterSaveProduct` | UPDATE `custom_blocks`, если bind отбросил поле |
+| `onBeforeDisplayProductView` | `$view->project_blocks`, HTML в выбранную позицию |
 
-Метод: `BsjshopFilterHelper::filterAjax()`. CSRF-токен обязателен. Параметры модуля грузить по `module_id` из `#__modules`, не из `ModuleHelper::getModuleById` (на com_ajax список модулей страницы пустой).
-
-## Layout
-
-```php
-$layoutPath = ModuleHelper::getLayoutPath('mod_bsjshop_filter', $params->get('layout', 'default'));
-```
-
-Override: `templates/<tmpl>/html/mod_bsjshop_filter/default.php`. CSS-классы `bsjf-*` и `data-bsjf*` не ломать без задачи. Визуальный контракт — [ui.md](ui.md).
+Override layout: `templates/<tmpl>/html/plg_system_bs_extended_product_jshop/default.php`.
 
 ## Куда класть изменение
 
 | Изменение | Файлы |
 |---|---|
-| Поле админки | `mod_bsjshop_filter.xml` + оба `.ini` |
-| Условие фильтра | Helper `filtersFromRequest` + SQL, `tmpl/default.php`, `script.js` |
-| Характеристика карточки | subform `card_fields`, `tmpl/products.php` |
-| Фон, отступы, кнопки | `assets/css/style.css`, при классе кнопки — `tmpl/default.php` |
-
-Чеклист шагов — [develop.md](develop.md).
+| Поле в карточке | `forms/project_blocks.xml` + оба `.ini` + `BlocksHelper::sanitize` |
+| Вывод блока | `tmpl/default.php`, при стиле — `media/css/product.css` |
+| Параметр плагина | `bs_extended_product_jshop.xml` + оба `.ini` |
+| Санитайз | только `BlocksHelper` |

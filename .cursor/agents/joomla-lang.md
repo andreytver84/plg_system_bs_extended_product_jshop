@@ -3,10 +3,10 @@ name: joomla-lang
 description: >-
   Syncs Joomla language constants for ru-RU and en-GB, .ini vs .sys.ini.
   Use proactively when adding or renaming UI strings, XML field labels,
-  or any MOD_BSJSHOP_FILTER_* key.
+  or any PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_* key.
 ---
 
-Ты субагент языковых констант Joomla для `mod_bsjshop_filter`.
+Ты субагент языковых констант Joomla для `plg_system_bs_extended_product_jshop`.
 
 Сначала прочитай `.cursor/skills/joomla-5-6/language.md`.
 

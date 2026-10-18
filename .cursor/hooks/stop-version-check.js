@@ -11,10 +11,8 @@ try {
     followup_message:
       'Версии не синхронны: xml=' +
       v.manifest +
-      ' php=' +
-      v.asset +
-      ' helper=' +
-      v.helperVer +
+      ' VERSION=' +
+      v.pluginVer +
       ' update.xml=' +
       v.update +
       (v.urlOk ? '' : ' (downloadurl не содержит версию)') +

@@ -1,33 +1,24 @@
-# Вёрстка фильтра и карточек
+# Вёрстка блоков на витрине
 
-Меняй внешний вид здесь. Классы `bsjf-*` и атрибуты `data-bsjf*` — контракт с `assets/js/script.js`.
+Классы `.bsep*` и атрибуты `data-bsep*` — контракт с `media/js/product.js`. Фон страницы не красить: это шаблон сайта.
 
-## Панель фильтра
+## Секции
 
-Один фон на `.bsjf-filters`:
+| Блок | Класс | Разметка |
+|---|---|---|
+| Корень | `.bsep` | `<section data-bsep>` |
+| Особенности | `.bsep-features` | grid 1 колонка, от 768px — 2; `--single` если заполнена одна |
+| Планировка | `.bsep-layouts` | `figure` + `figcaption`, ссылка `data-bsep-lightbox` |
+| Комплектация | `.bsep-accordion` | `<details>` / `<summary>`, плюс `summary::after` |
 
-- `--bsjf-panel: #E8E3D6`
-- `border-radius: 8px`
-- `padding: 1.5rem` (24px); на телефоне при открытии — `1rem`
+Заголовки секций: `.bsep__title` (`h2`), тексты из `Text::_`.
 
-У `.bsjf-range` своего фона нет. Цена и площадь стоят внутри общей панели.
+## Лайтбокс
 
-На ширине до 767px панель скрыта, пока у корня нет `.is-filter-open`. Кнопка `.bsjf-filter-toggle` тоже красит фон через `--bsjf-panel`.
-
-## Кнопки
-
-| Кнопка | Служебные классы | Параметр классов | Хук JS |
-|---|---|---|---|
-| Применить | `bsjf-btn` | `apply_class` | submit формы |
-| Сбросить | `bsjf-btn-reset` | `reset_class` | `data-bsjf-reset` |
-| Показать ещё | `bsjf-btn bsjf-more` | `more_class` | `data-bsjf-more` |
-
-Параметр дописывается после служебного класса. Пустой параметр ничего не добавляет.
+Один `<dialog data-bsep-dialog>` на блок планировки. JS не использует `innerHTML`. Закрытие: кнопка, клик по backdrop, Escape (native dialog).
 
 ## Что не переименовывать
 
-`data-bsjf`, `data-bsjf-form`, `data-bsjf-grid`, `data-bsjf-field`, `data-bsjf-cat`, `data-bsjf-category`, `data-bsjf-toggle`, `data-bsjf-reset`, `data-bsjf-more`, `data-bsjf-empty`, `data-module-id`, `data-token`, `data-price-min`, `data-price-max`, `data-area-min`, `data-area-max`.
+`data-bsep`, `data-bsep-lightbox`, `data-bsep-caption`, `data-bsep-dialog`, `data-bsep-close`. CSS-переменные `--bsep-gap`, `--bsep-title-size`, `--bsep-title-color`, `--bsep-text`, `--bsep-muted`, `--bsep-line`.
 
-Колонки сетки: `--bsjf-cols`, `--bsjf-cols-md`, `--bsjf-cols-sm` на корне `.bsjf`.
-
-Карточка: `tmpl/products.php`, классы `bsjf-card*`. Этот layout же уходит в AJAX-поле `html`.
+Override: `templates/<tmpl>/html/plg_system_bs_extended_product_jshop/default.php`.

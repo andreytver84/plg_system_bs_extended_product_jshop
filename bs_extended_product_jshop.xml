@@ -5,7 +5,8 @@
     <creationDate>2026-10</creationDate>
     <copyright>Copyright (C) 2026 Andrey Uvikov. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later</license>
-    <authorUrl>https://github.com/andreytver84</authorUrl>
+    <authorEmail>order@bestsite-studio.ru</authorEmail>
+    <authorUrl>https://bestsite-tver.ru</authorUrl>
     <version>1.0.0</version>
     <description>PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_XML_DESCRIPTION</description>
 
@@ -16,8 +17,14 @@
         <folder plugin="bs_extended_product_jshop">services</folder>
         <folder>src</folder>
         <folder>forms</folder>
+        <folder>tmpl</folder>
         <folder>language</folder>
     </files>
+
+    <media destination="plg_system_bs_extended_product_jshop" folder="media">
+        <folder>css</folder>
+        <folder>js</folder>
+    </media>
 
     <languages>
         <language tag="ru-RU">language/ru-RU/plg_system_bs_extended_product_jshop.ini</language>
@@ -26,7 +33,28 @@
         <language tag="en-GB">language/en-GB/plg_system_bs_extended_product_jshop.sys.ini</language>
     </languages>
 
+    <config>
+        <fields name="params">
+            <fieldset name="basic" label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_FIELDSET_PARAMS">
+                <field
+                    name="position"
+                    type="list"
+                    label="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_POSITION_LABEL"
+                    description="PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_POSITION_DESC"
+                    default="description"
+                    filter="cmd"
+                >
+                    <option value="description">PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_POSITION_DESCRIPTION</option>
+                    <option value="after_description">PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_POSITION_AFTER_DESCRIPTION</option>
+                    <option value="after_buttons">PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_POSITION_AFTER_BUTTONS</option>
+                    <option value="end">PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_POSITION_END</option>
+                    <option value="none">PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_POSITION_NONE</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
+
     <updateservers>
-        <server type="extension" priority="1" name="BS Extended Product JShop Updates">https://raw.githubusercontent.com/andreytver84/plg_bs_extended_product_jshop/main/update.xml</server>
+        <server type="extension" priority="1" name="BS Extended Product JShop Updates">https://raw.githubusercontent.com/andreytver84/plg_system_bs_extended_product_jshop/main/update.xml</server>
     </updateservers>
 </extension>

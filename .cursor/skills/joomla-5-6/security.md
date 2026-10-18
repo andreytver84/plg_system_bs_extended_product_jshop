@@ -1,37 +1,41 @@
-# Безопасность Joomla 5/6 (этот модуль)
+# Безопасность плагина
 
-AJAX идёт через `com_ajax`. Метод `filterAjax` проверяет CSRF (`Session::checkToken('request')`), published/access модуля и view levels товара.
+Данные блоков — stored XSS: админ пишет HTML, гости читают карточку. Санитайз на записи **и** на чтении.
 
 ## Обязательно
 
 ```php
 defined('_JEXEC') or die;
+htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 ```
 
 В namespaced-файлах: `\defined('_JEXEC') or die;`.
 
-Вывод в HTML:
+Сохранение только `isClient('administrator')`. Колонка `custom_blocks` — MEDIUMTEXT JSON.
 
-```php
-htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
-```
+## Вход
+
+`project_blocks` содержит HTML редактора. Фильтр `array`/`STRING` его вырежет, поэтому POST берут RAW **и сразу**:
+
+1. `Form::filter()` (`safehtml` / `string`);
+2. `BlocksHelper::sanitize()`.
+
+В БД — только результат. `eval`, `unserialize`, `content.prepare` по этим полям запрещены.
+
+## HTML редактора
+
+`InputFilter::getInstance([], [], 1, 1)` + `clean(..., 'HTML')`. Скрипты, iframe, object, on-атрибуты отбрасываются. Вывод колонок — этот HTML, не `htmlspecialchars` целиком (иначе сломается вёрстка).
+
+Текст заголовков/подписей: `clean(..., 'STRING')`, затем `htmlspecialchars`. `{name}` подставлять после экранирования имени товара.
+
+## Картинки
+
+Только относительный путь `images/…` или `media/…`. Отрезать `#joomlaImage://…`. Запрещены `..`, схемы, `//`, `javascript:`, `data:`, абсолютные диски, SVG. На витрине `src` = `Uri::root() . $path`.
 
 ## SQL
 
-Только query/bind/`whereIn`. ID категорий в EXISTS — только после `intval`. Имя колонки extra field: `extra_field_{id}` после проверки `getTableColumns`. Языковой суффикс — только `^[a-z]{2}-[A-Z]{2}$`.
+Query/bind. `product_id` — INTEGER. Имя колонки — константа `custom_blocks`, не из запроса. `ALTER TABLE` только если `getTableColumns` не видит колонку. При удалении плагина колонку не дропать.
 
-## Запреты
+## JS
 
-- `echo $params->get(...)` без санитайза.
-- `eval`, `unserialize` пользовательских данных, `innerHTML` из params в JS.
-- Конкатенация пользовательской строки в SQL.
-- Произвольный URL из params в `addScript`.
-- `ModuleHelper::getModuleById` как источник params в AJAX.
-
-## CSS-классы из params
-
-`moduleclass_sfx`, `apply_class`, `reset_class`, `more_class` и любой новый `*_class`: оставить `[A-Za-z0-9 _-]`, схлопнуть пробелы, в HTML через `htmlspecialchars`. Служебный класс (`bsjf-btn` и аналоги) параметром не заменять.
-
-## Ассеты
-
-Пути только через `Uri::root(true) . '/modules/mod_bsjshop_filter/assets/...'`.
+Без `innerHTML`. Лайтбокс: `textContent`, `setAttribute('src')`, проверка same-origin. Не вставлять пользовательский HTML в DOM через JS.

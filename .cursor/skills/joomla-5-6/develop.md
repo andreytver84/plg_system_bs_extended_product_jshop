@@ -1,38 +1,33 @@
-# Как развивать модуль
+# Как развивать плагин
 
 Один сценарий за раз. Версию не меняй, пока пользователь не попросил.
 
-## Поле в админке
+## Поле в карточке товара
 
-1. `<field>` в `mod_bsjshop_filter.xml`: `label` и `description` — ключи `MOD_BSJSHOP_FILTER_FIELD_*`.
-2. Тот же ключ в `language/ru-RU/*.ini` и `language/en-GB/*.ini`. В `.sys.ini` только имя модуля и `XML_DESCRIPTION`.
-3. Чтение: `$params->get()`, затем санитайз. В HTML — `htmlspecialchars(..., ENT_QUOTES, 'UTF-8')`.
-4. Текст по умолчанию: ключ + `translate_default="true"`.
+1. `<field>` в `forms/project_blocks.xml`. `label`/`description` — ключи `PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_*`.
+2. Тот же ключ в `language/ru-RU/*.ini` и `language/en-GB/*.ini`. В `.sys.ini` только имя и `XML_DESCRIPTION`.
+3. Добавь ключ в `BlocksHelper::sanitize` и вывод в `tmpl/default.php`.
+4. Редактор: `filter="safehtml"`, `hide="readmore,pagebreak,module,moduleposition"`. Текст: `filter="string"`. Медиа: `types="images"`.
+5. Пустой блок на витрине не выводить.
 
-## CSS-класс на кнопку
+## Новый визуальный блок
 
-Поля уже есть: `apply_class`, `reset_class`, `more_class`. Новый класс — по тому же пути.
+Цепочка одна:
 
-В `tmpl/default.php` пропускай строку через `$safeClass`: оставить только `[A-Za-z0-9 _-]`, схлопнуть пробелы. Служебный класс (`bsjf-btn`, `bsjf-btn-reset`, `bsjf-more`) остаётся в разметке.
+1. Поля формы + языки.
+2. Санитайз в `BlocksHelper` (HTML / text / mediaPath).
+3. Разметка в `tmpl/default.php` с экранированием.
+4. Стили `.bsep-*`. JS — только если нельзя на HTML (лайтбокс уже есть).
+5. Класс/data-атрибут не ломать: контракт [ui.md](ui.md).
 
-## Новый фильтр
+Три блока по умолчанию: Особенности (две колонки editor), Планировка (subform image+caption), Комплектация (subform title+textarea).
 
-Цепочка одна, разрывать нельзя:
+## Параметр плагина (позиция вывода)
 
-1. Переключатель `show_*` в XML и оба `.ini`.
-2. `BsjshopFilterHelper::filtersFromRequest()`: на странице имя `bsjf_{moduleId}_{field}`, в `com_ajax` — короткое (`price_from`). Если «от» больше «до», поменять местами.
-3. SQL только в Helper: bind / `whereIn` / `intval`. Колонка extra field — `extra_field_{id}` после `getTableColumns`.
-4. Поле внутри `.bsjf-filters`, атрибут `data-bsjf-field`. Своего фона у блока нет — см. [ui.md](ui.md).
-5. `assets/js/script.js`: добавить значение в `payload()` и сброс в обработчике `[data-bsjf-reset]`. Границы, если нужны, — `data-*` на корне `.bsjf`.
-
-Характеристики карточки (`card_fields`) в фильтр не попадают. Их читает `getCardFields()` и рисует `tmpl/products.php`.
-
-## Карточка
-
-Новая характеристика — строка subform `card_fields` (ID, префикс, постфикс), не новый фильтр. Пустое значение на карточке не выводить.
+Поле в `<config>` манифеста. Значения `cmd`: `description`, `after_description`, `after_buttons`, `end`, `none`. Чтение: `$this->params->get('position', 'description')`.
 
 ## После правки
 
 - Ключи ru и en совпадают.
-- Четыре номера версии совпадают, если пользователь просил поднять версию. Номер в этот справочник не записывать.
-- Текст установщика и README — только когда меняется способ настройки. Тогда [description.md](description.md).
+- RAW POST не попадает в JSON без sanitize.
+- Четыре? Нет: три номера версии совпадают, если просили поднять версию.
