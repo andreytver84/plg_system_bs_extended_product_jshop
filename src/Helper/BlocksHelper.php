@@ -28,7 +28,7 @@ final class BlocksHelper
         $layouts = [];
 
         foreach (self::rows($raw['layouts'] ?? null) as $row) {
-            $image = self::mediaPath((string) ($row['image'] ?? ''));
+            $image = self::mediaPath(self::scalar($row['image'] ?? ''));
 
             if ($image === '') {
                 continue;
@@ -36,15 +36,15 @@ final class BlocksHelper
 
             $layouts[] = [
                 'image'   => $image,
-                'caption' => self::text((string) ($row['caption'] ?? '')),
+                'caption' => self::text(self::scalar($row['caption'] ?? '')),
             ];
         }
 
         $accordions = [];
 
         foreach (self::rows($raw['accordions'] ?? null) as $row) {
-            $title   = self::text((string) ($row['title'] ?? ''));
-            $content = self::html((string) ($row['content'] ?? ''));
+            $title   = self::text(self::scalar($row['title'] ?? ''));
+            $content = self::html(self::scalar($row['content'] ?? ''));
 
             if ($title === '' && $content === '') {
                 continue;
@@ -57,8 +57,8 @@ final class BlocksHelper
         }
 
         return [
-            'features_col1' => self::html((string) ($raw['features_col1'] ?? '')),
-            'features_col2' => self::html((string) ($raw['features_col2'] ?? '')),
+            'features_col1' => self::html(self::scalar($raw['features_col1'] ?? '')),
+            'features_col2' => self::html(self::scalar($raw['features_col2'] ?? '')),
             'layouts'       => $layouts,
             'accordions'    => $accordions,
         ];
@@ -97,8 +97,29 @@ final class BlocksHelper
         }
 
         $filter = InputFilter::getInstance([], [], 1, 1);
+        $html   = $filter->clean($html, 'HTML');
+        $html   = preg_replace('#\s+on[a-z0-9_-]+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)#i', '', $html) ?? $html;
+        $html   = preg_replace('#(href|src)\s*=\s*(["\'])\s*(?:javascript|data|vbscript):[^"\']*\2#i', '$1=$2$2', $html) ?? $html;
 
-        return trim($filter->clean($html, 'HTML'));
+        return trim($html);
+    }
+
+    /**
+     * Строка из POST: медиа Joomla может прийти массивом с ключом imagefile.
+     */
+    public static function scalar(mixed $value): string
+    {
+        if (\is_array($value)) {
+            foreach (['imagefile', 'image', 'path', 'value'] as $key) {
+                if (isset($value[$key]) && \is_scalar($value[$key])) {
+                    return (string) $value[$key];
+                }
+            }
+
+            return '';
+        }
+
+        return \is_scalar($value) ? (string) $value : '';
     }
 
     public static function text(string $text): string

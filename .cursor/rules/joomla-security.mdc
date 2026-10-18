@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Безопасность блоков товара
 
-- POST `project_blocks` брать RAW **только** затем сразу `Form::filter` + `BlocksHelper::sanitize`.
+- POST `project_blocks` брать RAW-массивом и сразу `BlocksHelper::sanitize`. `Form::filter` не источник данных: может обнулить редактор. Нет ключа в POST — колонку не затирать.
 - Редактор: `InputFilter` HTML, без `script`/`iframe`/`on*`. Не вызывать `content.prepare` на этих полях.
 - Заголовки, подписи, `{name}`: `BlocksHelper::text`, в HTML — `htmlspecialchars`.
 - Картинки: относительный `images|media/…`, без `..`, схем и SVG. `src` собирать из `Uri::root()`.

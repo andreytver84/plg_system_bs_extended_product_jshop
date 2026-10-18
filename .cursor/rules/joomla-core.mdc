@@ -18,7 +18,7 @@ alwaysApply: true
 ## Жёсткие запреты
 
 - PHP: `defined('_JEXEC') or die;`, API `Joomla\CMS\*`, без `JFactory`/`JText`/`JHtml`.
-- Сохранение: RAW POST сразу в `Form::filter` + `BlocksHelper::sanitize`. В БД только JSON после санитайза.
+- Сохранение: RAW-массив `project_blocks` сразу в `BlocksHelper::sanitize`. Нет ключа в POST — колонку не затирать. В БД только JSON после санитайза. Финальная запись в `onAfterSaveProductEnd`.
 - Вывод: текст/пути — `htmlspecialchars(..., ENT_QUOTES, 'UTF-8')`. HTML редактора — только после `BlocksHelper::html`.
 - SQL: bind + `getTableColumns` до ALTER/чтения `custom_blocks`.
 - Языки: ключи одинаковые в ru-RU и en-GB; `.ini` ≠ `.sys.ini`.

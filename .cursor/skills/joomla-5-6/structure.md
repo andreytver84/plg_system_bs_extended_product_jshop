@@ -32,8 +32,9 @@ Namespace: `Joomla\Plugin\System\BsExtendedProductJshop`.
 | Событие | Зачем |
 |---|---|
 | `onBeforeDisplayEditProductView` | HTML в `$view->{'plugin_template_description_'.$lang}` первой вкладки, обёртка `<tr><td colspan="2">` |
-| `onBeforeDisplaySaveProduct` | санитизированный JSON в `$post` и объект товара |
-| `onAfterSaveProduct` | UPDATE `custom_blocks`, если bind отбросил поле |
+| `onBeforeDisplaySaveProduct` | санитизированный JSON из RAW `project_blocks`, без затирания если ключа нет |
+| `onAfterSaveProduct` | UPDATE `custom_blocks`, pending не сбрасывать |
+| `onAfterSaveProductEnd` | финальный UPDATE после `load()+store()` картинок |
 | `onBeforeDisplayProductView` | `$view->project_blocks`, HTML в выбранную позицию |
 
 Override layout: `templates/<tmpl>/html/plg_system_bs_extended_product_jshop/default.php`.

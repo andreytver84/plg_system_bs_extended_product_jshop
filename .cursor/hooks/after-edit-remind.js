@@ -21,7 +21,7 @@ if (
   /(^|\/)tmpl\/.+\.php$/.test(norm) ||
   /(^|\/)script\.php$/.test(norm)
 ) {
-  hints.push('PHP: _JEXEC, htmlspecialchars ENT_QUOTES UTF-8, SQL bind. RAW POST сразу Form::filter + BlocksHelper::sanitize. Картинки без SVG/.. . Сохранение только administrator.');
+  hints.push('PHP: _JEXEC, htmlspecialchars ENT_QUOTES UTF-8, SQL bind. RAW-массив project_blocks сразу BlocksHelper::sanitize, пустым JSON колонку не затирать. Картинки без SVG/.. . Сохранение только administrator. Финальная запись onAfterSaveProductEnd.');
 }
 
 if (/product\.css$/.test(norm)) {

@@ -15,12 +15,9 @@ htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 
 ## Вход
 
-`project_blocks` содержит HTML редактора. Фильтр `array`/`STRING` его вырежет, поэтому POST берут RAW **и сразу**:
+`project_blocks` содержит HTML редактора. Фильтр `array`/`STRING` и `Form::filter()` его вырезают или обнуляют, поэтому POST берут RAW-массивом **и сразу** `BlocksHelper::sanitize()`. Если ключа нет в POST или это не массив — колонку не трогать, пустым JSON не затирать.
 
-1. `Form::filter()` (`safehtml` / `string`);
-2. `BlocksHelper::sanitize()`.
-
-В БД — только результат. `eval`, `unserialize`, `content.prepare` по этим полям запрещены.
+В БД — только результат sanitize. `eval`, `unserialize`, `content.prepare` по этим полям запрещены. Повторная запись — в `onAfterSaveProductEnd`, после `load()+store()` картинок.
 
 ## HTML редактора
 

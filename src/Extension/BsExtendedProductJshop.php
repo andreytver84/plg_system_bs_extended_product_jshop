@@ -23,7 +23,7 @@ use Joomla\Plugin\System\BsExtendedProductJshop\Helper\BlocksHelper;
 
 final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterface
 {
-    public const VERSION = '1.0.1';
+    public const VERSION = '1.0.2';
 
     public const COLUMN = 'custom_blocks';
 
@@ -41,6 +41,7 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
             'onBeforeDisplayEditProductView' => 'onBeforeDisplayEditProductView',
             'onBeforeDisplaySaveProduct'     => 'onBeforeDisplaySaveProduct',
             'onAfterSaveProduct'             => 'onAfterSaveProduct',
+            'onAfterSaveProductEnd'          => 'onAfterSaveProductEnd',
             'onBeforeDisplayProductView'     => 'onBeforeDisplayProductView',
         ];
     }
@@ -89,16 +90,28 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
             return;
         }
 
-        $raw = $app->getInput()->post->get('project_blocks', [], 'RAW');
-        $raw = \is_array($raw) ? $raw : [];
+        $input = $app->getInput()->post;
 
-        $form     = $this->makeForm();
-        $filtered = $form->filter($raw);
-        $blocks   = BlocksHelper::sanitize(\is_array($filtered) ? $filtered : $raw);
-        $json     = json_encode($blocks, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if (!$input->exists('project_blocks')) {
+            return;
+        }
+
+        $raw = $input->get('project_blocks', null, 'raw');
+
+        if (!\is_array($raw)) {
+            $all = $input->getArray();
+            $raw = $all['project_blocks'] ?? null;
+        }
+
+        if (!\is_array($raw)) {
+            return;
+        }
+
+        $blocks = BlocksHelper::sanitize($raw);
+        $json   = json_encode($blocks, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
 
         if ($json === false) {
-            $json = '{}';
+            return;
         }
 
         $this->pendingReady = true;
@@ -111,17 +124,33 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
             $event->setArgument(0, $post);
         }
 
-        $product = $event->getArgument(1);
-
-        if (\is_object($product)) {
-            $product->{self::COLUMN} = $json;
+        foreach ($event->getArguments() as $arg) {
+            if (\is_object($arg)) {
+                $arg->{self::COLUMN} = $json;
+            }
         }
     }
 
     /**
-     * Дублирует запись колонки после store(), если bind отбросил неизвестное поле.
+     * Пишет колонку после первого store(). pending не сбрасывает:
+     * следом uploadImages() может сделать load()+store() и затереть поле.
      */
     public function onAfterSaveProduct(Event $event): void
+    {
+        $this->writePending($event->getArguments());
+    }
+
+    /**
+     * Финальная запись после картинок и связанных таблиц.
+     */
+    public function onAfterSaveProductEnd(Event $event): void
+    {
+        $this->writePending($event->getArguments());
+        $this->pendingReady = false;
+        $this->pendingJson  = '';
+    }
+
+    private function writePending(array $args): void
     {
         if (!$this->pendingReady) {
             return;
@@ -133,14 +162,11 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
             return;
         }
 
-        $productId = $this->findProductId($event->getArguments());
+        $productId = $this->findProductId($args);
 
         if ($productId > 0) {
             $this->storeColumn($productId, $this->pendingJson);
         }
-
-        $this->pendingReady = false;
-        $this->pendingJson  = '';
     }
 
     /**
@@ -290,7 +316,7 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
 
     private function storeColumn(int $productId, string $json): void
     {
-        if ($productId < 1 || !$this->hasColumn()) {
+        if ($productId < 1 || !$this->ensureColumn()) {
             return;
         }
 
@@ -304,6 +330,32 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
 
         $db->setQuery($query);
         $db->execute();
+    }
+
+    private function ensureColumn(): bool
+    {
+        if ($this->hasColumn()) {
+            return true;
+        }
+
+        try {
+            $db      = $this->db();
+            $columns = $db->getTableColumns('#__jshopping_products');
+
+            if (!isset($columns[self::COLUMN])) {
+                $db->setQuery(
+                    'ALTER TABLE ' . $db->quoteName('#__jshopping_products')
+                    . ' ADD ' . $db->quoteName(self::COLUMN) . ' MEDIUMTEXT NULL'
+                );
+                $db->execute();
+            }
+
+            $this->columnExists = true;
+        } catch (\Throwable) {
+            $this->columnExists = false;
+        }
+
+        return $this->columnExists === true;
     }
 
     private function hasColumn(): bool
@@ -354,8 +406,16 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
     private function findProductId(array $args): int
     {
         foreach ($args as $arg) {
-            if (\is_object($arg) && isset($arg->product_id)) {
-                $id = (int) $arg->product_id;
+            if (\is_int($arg) || (\is_string($arg) && ctype_digit($arg))) {
+                $id = (int) $arg;
+
+                if ($id > 0) {
+                    return $id;
+                }
+            }
+
+            if (\is_object($arg)) {
+                $id = (int) ($arg->product_id ?? 0);
 
                 if ($id > 0) {
                     return $id;
