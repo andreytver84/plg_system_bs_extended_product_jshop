@@ -23,7 +23,7 @@ use Joomla\Plugin\System\BsExtendedProductJshop\Helper\BlocksHelper;
 
 final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterface
 {
-    public const VERSION = '1.0.0';
+    public const VERSION = '1.0.1';
 
     public const COLUMN = 'custom_blocks';
 
@@ -39,7 +39,7 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
     {
         return [
             'onBeforeDisplayEditProductView' => 'onBeforeDisplayEditProductView',
-            'onBeforeSaveProduct'            => 'onBeforeSaveProduct',
+            'onBeforeDisplaySaveProduct'     => 'onBeforeDisplaySaveProduct',
             'onAfterSaveProduct'             => 'onAfterSaveProduct',
             'onBeforeDisplayProductView'     => 'onBeforeDisplayProductView',
         ];
@@ -50,9 +50,9 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
      */
     public function onBeforeDisplayEditProductView(Event $event): void
     {
-        $view = $event->getArgument(0);
+        $view = $this->argumentObject($event, 'product');
 
-        if (!\is_object($view) || !isset($view->product) || !\is_object($view->product)) {
+        if (!$view || !isset($view->product) || !\is_object($view->product)) {
             return;
         }
 
@@ -60,7 +60,8 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
         $form   = $this->makeForm();
         $form->bind($blocks);
 
-        $html  = '<div class="card mt-4 mb-4 border-primary">';
+        $html  = '<tr><td colspan="2">';
+        $html .= '<div class="card mt-3 mb-3 border-primary">';
         $html .= '<div class="card-header bg-primary text-white">';
         $html .= '<h4 class="m-0">' . htmlspecialchars(Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_HEADING'), ENT_QUOTES, 'UTF-8') . '</h4>';
         $html .= '</div><div class="card-body">';
@@ -69,19 +70,18 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
             $html .= $field->renderField();
         }
 
-        $html .= '</div></div>';
+        $html .= '</div></div></td></tr>';
 
-        if (!isset($view->plugin_template_description)) {
-            $view->plugin_template_description = '';
-        }
-
-        $view->plugin_template_description .= $html;
+        $langCode = $this->firstLanguageCode($view);
+        $key      = $langCode !== '' ? 'plugin_template_description_' . $langCode : 'plugin_template_description';
+        $view->{$key} = (string) ($view->{$key} ?? '') . $html;
     }
 
     /**
      * Сохраняет санитизированный JSON в post и в объект товара.
+     * Событие JoomShopping: onBeforeDisplaySaveProduct(&$post, &$product).
      */
-    public function onBeforeSaveProduct(Event $event): void
+    public function onBeforeDisplaySaveProduct(Event $event): void
     {
         $app = $this->getApplication();
 
@@ -209,7 +209,7 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
         }
 
         $property = match ($position) {
-            'after_description' => '_tmp_product_html_description',
+            'after_description' => '_tmp_product_html_before_demofiles',
             'after_buttons'     => '_tmp_product_html_after_buttons',
             default             => '_tmp_product_html_end',
         };
@@ -320,6 +320,32 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
         }
 
         return $this->columnExists;
+    }
+
+    private function argumentObject(Event $event, string $property): ?object
+    {
+        foreach ($event->getArguments() as $arg) {
+            if (\is_object($arg) && isset($arg->{$property})) {
+                return $arg;
+            }
+        }
+
+        return null;
+    }
+
+    private function firstLanguageCode(object $view): string
+    {
+        if (empty($view->languages)) {
+            return '';
+        }
+
+        foreach ($view->languages as $lang) {
+            if (\is_object($lang) && !empty($lang->language)) {
+                return (string) $lang->language;
+            }
+        }
+
+        return '';
     }
 
     /**

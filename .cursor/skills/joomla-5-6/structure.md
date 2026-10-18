@@ -31,8 +31,8 @@ Namespace: `Joomla\Plugin\System\BsExtendedProductJshop`.
 
 | Событие | Зачем |
 |---|---|
-| `onBeforeDisplayEditProductView` | HTML полей в `$view->plugin_template_description` |
-| `onBeforeSaveProduct` | санитизированный JSON в `$post` и объект товара |
+| `onBeforeDisplayEditProductView` | HTML в `$view->{'plugin_template_description_'.$lang}` первой вкладки, обёртка `<tr><td colspan="2">` |
+| `onBeforeDisplaySaveProduct` | санитизированный JSON в `$post` и объект товара |
 | `onAfterSaveProduct` | UPDATE `custom_blocks`, если bind отбросил поле |
 | `onBeforeDisplayProductView` | `$view->project_blocks`, HTML в выбранную позицию |
 
