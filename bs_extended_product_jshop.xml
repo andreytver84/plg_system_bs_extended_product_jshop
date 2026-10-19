@@ -7,7 +7,7 @@
     <license>GNU General Public License version 2 or later</license>
     <authorEmail>order@bestsite-studio.ru</authorEmail>
     <authorUrl>https://bestsite-tver.ru</authorUrl>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <description>PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_XML_DESCRIPTION</description>
 
     <namespace path="src">Joomla\Plugin\System\BsExtendedProductJshop</namespace>

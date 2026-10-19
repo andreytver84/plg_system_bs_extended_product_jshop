@@ -78,35 +78,64 @@ $featuresClass = ($col1 !== '' && $col2 !== '') ? 'bsep-features__grid' : 'bsep-
         </div>
     <?php endif; ?>
 
-    <?php if ($hasAccordion) : ?>
+    <?php if ($hasAccordion) :
+        $accordionKey = bin2hex(random_bytes(4));
+        $itemIndex    = 0;
+        ?>
         <div class="bsep-accordion">
             <h3 class="bsep__title"><?php echo $esc(Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDION_SECTION_TITLE')); ?></h3>
-            <div class="bsep-accordion__list">
-                <?php foreach ($accordion as $item) :
-                    $title = BlocksHelper::text((string) ($item['title'] ?? ''));
-                    $body  = BlocksHelper::html((string) ($item['content'] ?? ''));
+            <div class="sppb-addon sppb-addon-accordion">
+                <div class="sppb-addon-content">
+                    <div class="sppb-panel-group">
+                        <?php foreach ($accordion as $item) :
+                            $title = BlocksHelper::text((string) ($item['title'] ?? ''));
+                            $body  = BlocksHelper::html((string) ($item['content'] ?? ''));
 
-                    if ($title === '' && $body === '') {
-                        continue;
-                    }
+                            if ($title === '' && $body === '') {
+                                continue;
+                            }
 
-                    if ($title !== '') {
-                        $title = str_replace('{name}', $esc($productName), $esc($title));
-                    }
+                            if ($title !== '') {
+                                $title = str_replace('{name}', $esc($productName), $esc($title));
+                            } else {
+                                $title = $esc(Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDION_TITLE_LABEL'));
+                            }
 
-                    if ($body !== '' && preg_match('/<(p|div|br|ul|ol|table|h[1-6])\b/i', $body) !== 1) {
-                        $body = nl2br($body, false);
-                    }
-                    ?>
-                    <details class="bsep-accordion__item">
-                        <summary class="bsep-accordion__summary">
-                            <span class="bsep-accordion__title"><?php echo $title !== '' ? $title : $esc(Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDION_TITLE_LABEL')); ?></span>
-                        </summary>
-                        <?php if ($body !== '') : ?>
-                            <div class="bsep-accordion__body"><?php echo $body; ?></div>
-                        <?php endif; ?>
-                    </details>
-                <?php endforeach; ?>
+                            if ($body !== '' && preg_match('/<(p|div|br|ul|ol|table|h[1-6])\b/i', $body) !== 1) {
+                                $body = nl2br($body, false);
+                            }
+
+                            $headingId = 'sppb-ac-heading-' . $accordionKey . '-key-' . $itemIndex;
+                            $contentId = 'sppb-ac-content-' . $accordionKey . '-key-' . $itemIndex;
+                            $itemIndex++;
+                            ?>
+                            <div class="sppb-panel sppb-panel-modern">
+                                <button
+                                    type="button"
+                                    data-keep-open="0"
+                                    class="sppb-reset-button-styles sppb-w-full sppb-panel-heading"
+                                    id="<?php echo $esc($headingId); ?>"
+                                    aria-expanded="false"
+                                    aria-controls="<?php echo $esc($contentId); ?>"
+                                >
+                                    <span class="sppb-panel-title" aria-label="<?php echo $title; ?>"><?php echo $title; ?></span>
+                                    <span class="sppb-toggle-direction" aria-hidden="true"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
+                                </button>
+                                <div
+                                    id="<?php echo $esc($contentId); ?>"
+                                    class="sppb-panel-collapse"
+                                    role="region"
+                                    aria-labelledby="<?php echo $esc($headingId); ?>"
+                                    style="display: none;"
+                                >
+                                    <?php if ($body !== '') : ?>
+                                        <div class="sppb-panel-body"><?php echo $body; ?></div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
             </div>
         </div>
     <?php endif; ?>

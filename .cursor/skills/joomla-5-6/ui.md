@@ -9,7 +9,7 @@
 | Корень | `.bsep` | `<section data-bsep>` |
 | Особенности | `.bsep-features` | grid 1 колонка, от 768px — 2; `--single` если заполнена одна |
 | Планировка | `.bsep-layouts` | `figure` + `figcaption`, ссылка `data-bsep-lightbox` |
-| Комплектация | `.bsep-accordion` | `<details>` / `<summary>`, плюс `summary::after` |
+| Комплектация | `.bsep-accordion` | разметка SP Page Builder: `.sppb-addon-accordion` → `.sppb-panel-group` → `.sppb-panel.sppb-panel-modern`, кнопка `.sppb-panel-heading`, тело `.sppb-panel-collapse` |
 
 Лид «Описание проекта»: `.bsep__title.bsep__lead` (`h2`). Заголовки секций Особенности, Планировка, Комплектация: `.bsep__title` (`h3`). Тексты из `Text::_`. Стили блоков живут в шаблоне сайта, не в плагине.
 

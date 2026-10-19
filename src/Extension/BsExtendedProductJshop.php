@@ -23,7 +23,7 @@ use Joomla\Plugin\System\BsExtendedProductJshop\Helper\BlocksHelper;
 
 final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterface
 {
-    public const VERSION = '1.1.1';
+    public const VERSION = '1.1.2';
 
     public const COLUMN = 'custom_blocks';
 
@@ -197,6 +197,12 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
             return;
         }
 
+        $accordions = $blocks['accordions'] ?? [];
+
+        if (\is_array($accordions) && $accordions !== []) {
+            $this->loadAssets();
+        }
+
         $this->injectHtml($view, $html);
     }
 
@@ -240,6 +246,22 @@ final class BsExtendedProductJshop extends CMSPlugin implements SubscriberInterf
         };
 
         $view->{$property} = (string) ($view->{$property} ?? '') . $html;
+    }
+
+    private function loadAssets(): void
+    {
+        $app = $this->getApplication();
+
+        if (!$app) {
+            return;
+        }
+
+        $app->getDocument()->getWebAssetManager()->registerAndUseScript(
+            'plg_system_bs_extended_product_jshop.product',
+            'plg_system_bs_extended_product_jshop/js/product.js',
+            ['version' => self::VERSION],
+            ['defer' => true]
+        );
     }
 
     private function makeForm(): Form

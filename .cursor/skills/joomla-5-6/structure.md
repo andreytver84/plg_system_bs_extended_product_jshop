@@ -23,7 +23,7 @@ Namespace: `Joomla\Plugin\System\BsExtendedProductJshop`.
 ## Совместимость 4, 5 и 6
 
 - PHP 8.1, API `Joomla\CMS\*`. Запрещены `JFactory` / `JText` / `JHtml` / `JRequest`.
-- Bootstrap шаблона не требовать: аккордеон — `<details>`. jQuery не добавлять.
+- Bootstrap шаблона не требовать. Аккордеон комплектации повторяет разметку SP Page Builder. jQuery не добавлять.
 - Ассеты: WebAssetManager, `version` = `BsExtendedProductJshop::VERSION`.
 
 ## События JoomShopping 5

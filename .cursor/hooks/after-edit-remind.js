@@ -25,7 +25,7 @@ if (
 }
 
 if (/product\.css$/.test(norm)) {
-  hints.push('Вёрстка: только .bsep и --bsep-*. Две колонки от 768px, details-аккордеон. Контракт: .cursor/skills/joomla-5-6/ui.md');
+  hints.push('Вёрстка: .bsep и стили шаблона. Аккордеон комплектации — разметка SP Page Builder. Контракт: .cursor/skills/joomla-5-6/ui.md');
 }
 
 if (/(^|\/)media\/js\/product\.js$/.test(norm)) {

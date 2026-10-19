@@ -14,7 +14,7 @@ description: >-
 
 1. Фон страницы не задавай. Стили только внутри `.bsep` и `--bsep-*`.
 2. Служебные классы и `data-bsep*` не переименовывай: на них завязан `product.js`.
-3. Особенности — CSS grid, две колонки от 768px. Аккордеон — `<details>`, не Bootstrap JS.
+3. Особенности — CSS grid, две колонки от 768px. Аккордеон комплектации — разметка SP Page Builder, не Bootstrap JS.
 4. Текст в tmpl — `htmlspecialchars`. HTML редактора — после `BlocksHelper`.
 5. jQuery не подключай.
 

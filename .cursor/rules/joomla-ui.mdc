@@ -9,6 +9,6 @@ alwaysApply: false
 - Префикс `.bsep` / `data-bsep*`. Не переименовывать без задачи: на них JS лайтбокса.
 - Особенности: `.bsep-features__grid` две колонки от 768px; одна колонка — модификатор `--single`.
 - Планировка: `figure` + подпись, клик по `data-bsep-lightbox`.
-- Комплектация: `<details>`/`<summary>`, плюс через `::after`. Не Bootstrap-collapse.
+- Комплектация: разметка SP Page Builder (`.sppb-panel-modern`, кнопка `.sppb-panel-heading`, `.sppb-panel-collapse`). Открытие — `product.js`, класс `active`. Не Bootstrap-collapse.
 - Фон страницы шаблона не задавать. Переменные `--bsep-*` на `.bsep`.
 - Контракт: `.cursor/skills/joomla-5-6/ui.md`.
