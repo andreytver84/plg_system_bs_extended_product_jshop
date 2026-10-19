@@ -36,7 +36,7 @@ $featuresClass = ($col1 !== '' && $col2 !== '') ? 'bsep-features__grid' : 'bsep-
     <?php endif; ?>
     <?php if ($hasFeatures) : ?>
         <div class="bsep-features">
-            <h2 class="bsep__title"><?php echo $esc(Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_FEATURES_TITLE')); ?></h2>
+            <h3 class="bsep__title"><?php echo $esc(Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_FEATURES_TITLE')); ?></h3>
             <div class="<?php echo $esc($featuresClass); ?>">
                 <?php if ($col1 !== '') : ?>
                     <div class="bsep-features__col"><?php echo $col1; ?></div>
@@ -50,7 +50,7 @@ $featuresClass = ($col1 !== '' && $col2 !== '') ? 'bsep-features__grid' : 'bsep-
 
     <?php if ($hasLayouts) : ?>
         <div class="bsep-layouts">
-            <h2 class="bsep__title"><?php echo $esc(Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_LAYOUTS_TITLE')); ?></h2>
+            <h3 class="bsep__title"><?php echo $esc(Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_LAYOUTS_TITLE')); ?></h3>
             <?php foreach ($layouts as $row) :
                 $image = BlocksHelper::mediaPath((string) ($row['image'] ?? ''));
 
@@ -80,7 +80,7 @@ $featuresClass = ($col1 !== '' && $col2 !== '') ? 'bsep-features__grid' : 'bsep-
 
     <?php if ($hasAccordion) : ?>
         <div class="bsep-accordion">
-            <h2 class="bsep__title"><?php echo $esc(Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDION_SECTION_TITLE')); ?></h2>
+            <h3 class="bsep__title"><?php echo $esc(Text::_('PLG_SYSTEM_BS_EXTENDED_PRODUCT_JSHOP_ACCORDION_SECTION_TITLE')); ?></h3>
             <div class="bsep-accordion__list">
                 <?php foreach ($accordion as $item) :
                     $title = BlocksHelper::text((string) ($item['title'] ?? ''));

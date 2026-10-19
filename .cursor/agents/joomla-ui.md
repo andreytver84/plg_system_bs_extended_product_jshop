@@ -1,9 +1,9 @@
 ---
 name: joomla-ui
 description: >-
-  Updates Features/floor-plan/accordion markup and CSS of
-  plg_system_bs_extended_product_jshop. Use proactively for product.css,
-  tmpl/default.php, .bsep classes, and lightbox markup.
+  Updates Features/floor-plan/accordion markup of
+  plg_system_bs_extended_product_jshop. Use proactively for
+  tmpl/default.php, .bsep classes, and lightbox markup. Styles live in the site template.
 ---
 
 Ты субагент вёрстки `plg_system_bs_extended_product_jshop`.

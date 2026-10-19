@@ -11,7 +11,7 @@
 | Планировка | `.bsep-layouts` | `figure` + `figcaption`, ссылка `data-bsep-lightbox` |
 | Комплектация | `.bsep-accordion` | `<details>` / `<summary>`, плюс `summary::after` |
 
-Заголовки секций: `.bsep__title` (`h2`), тексты из `Text::_`.
+Лид «Описание проекта»: `.bsep__title.bsep__lead` (`h2`). Заголовки секций Особенности, Планировка, Комплектация: `.bsep__title` (`h3`). Тексты из `Text::_`. Стили блоков живут в шаблоне сайта, не в плагине.
 
 ## Лайтбокс
 

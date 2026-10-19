@@ -12,7 +12,6 @@ src/Extension/BsExtendedProductJshop.php
 src/Helper/BlocksHelper.php     HTML/текст/пути/JSON
 forms/project_blocks.xml        поля в карточке товара
 tmpl/default.php                витрина
-media/css/product.css
 media/js/product.js             лайтбокс без innerHTML
 language/ru-RU|en-GB/           .ini и .sys.ini
 update.xml
@@ -44,6 +43,6 @@ Override layout: `templates/<tmpl>/html/plg_system_bs_extended_product_jshop/def
 | Изменение | Файлы |
 |---|---|
 | Поле в карточке | `forms/project_blocks.xml` + оба `.ini` + `BlocksHelper::sanitize` |
-| Вывод блока | `tmpl/default.php`, при стиле — `media/css/product.css` |
+| Вывод блока | `tmpl/default.php`. Стили — в шаблоне сайта |
 | Параметр плагина | `bs_extended_product_jshop.xml` + оба `.ini` |
 | Санитайз | только `BlocksHelper` |
